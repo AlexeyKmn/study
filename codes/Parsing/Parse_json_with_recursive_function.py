@@ -1,3 +1,5 @@
+"""Используется универсальная рекурсивная функция для поиска всех страниц с товарами.
+Принимает на вход список параметров для парсинга по BS4 объекту"""
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -12,7 +14,6 @@ main_url = 'https://parsinger.ru/html/'
 # first_params={'name': 'span', 'class_': 'label', ...},
 # second_params={'name': 'span', 'class_': 'argument', 'text': 'имя', ...)
 # ниже лист этих самых параметров для парсеров
-
 parsers_lst = [[{'name': 'div', 'class_': 'nav_menu'}, {'name': 'a'}],  # поиск ссылок на категории товаров
                [{'name': 'div', 'class_': 'pagen'}, {'name': 'a'}],  # поиск ссылок на страницы с товаром №№ 1, 2, 3, ..
                [{'name': 'div', 'class_': 'item_card'}, {'name': 'a', 'class_': 'name_item'}]  # поиск ссылок на товары
@@ -50,7 +51,7 @@ def get_urls(url, main_page: str, parsers: list[list[dict]]) -> list:
         else:
             return url
     except Exception as e:
-        print(e)
+        print("Ошибка поиска страниц:", e)
 
 
 def parse_data(url: str, data: list[dict]):
@@ -80,8 +81,8 @@ def parse_data(url: str, data: list[dict]):
 
         data.append(res)
         return None
-    except:
-        raise Exception("Неверно указаны алгоритмы извлечения данных")
+    except Exception as e:
+        print("Неверно указаны алгоритмы извлечения данных", e)
 
 
 def dump_to_json(data: list[dict], filename: str):
@@ -99,7 +100,7 @@ if __name__ == "__main__":
             parse_data(url, data)
         print('\n', 'data parsed...')
         print('**************************')
-        dump_to_json(data, 'results_recursive.json')
+        dump_to_json(data, 'results.json')
         print(' json file created. Success')
 
     except Exception as e:
